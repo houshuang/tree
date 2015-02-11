@@ -57,14 +57,15 @@ class Tree:
 		print(self.tree)
 
 	def render(self, head = None, level = 0, func = None):
-		if not head:
-			head = self.root
-
 		if not func:
 			func = self._printItem
 
 		func(head, level)
-		for branch in sorted(self.tree[head],key = lambda x: x[2]):
+
+		if head is None:
+			head = self.root
+
+		for branch in sorted(self.tree[head], key = lambda x: x[2]):
 			self.render(head = branch[0], level = level + 1, func = func)
 
 	def _printItem(self, item, level):
