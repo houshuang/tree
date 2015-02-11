@@ -16,9 +16,23 @@ class Tree:
 		if ary:
 			self.addMany(ary, reachabilityCheck=reachabilityCheck)
 
+	def checkReachable(self, itemid):
+		if itemid not in self.subTreeItems(self.root) + [self.root]:
+			raise(Exception("Node %s is not reachable from root %s" %
+				(str(itemid), str(self.root))))
+
+	# make sure that all nodes are reachable
+	def verifyTree(self):
+		for k, branch in self.tree.items():
+			for item in branch:
+				self.checkReachable(item[1])
+
 	def addMany(self, ary, reachabilityCheck=True):
 		for itemary in ary:
-			self.add(*itemary, reachabilityCheck=reachabilityCheck)
+			self.add(*itemary, reachabilityCheck=False)
+
+		if reachabilityCheck:
+			self.verifyTree()
 
 	def findItem(self, itemid):
 		for k, branch in self.tree.items():
@@ -35,9 +49,7 @@ class Tree:
 			parent = self.root
 		
 		if reachabilityCheck:
-			if parent not in self.subTreeItems(self.root) + [self.root]:
-				raise(Exception("Node %s's parent %s is not reachable from root %s" % 
-					(str(itemid), str(parent), str(self.root))))
+			self.checkReachable(parent)
 
 		self.tree[parent] = self.tree[parent] + [[itemid, parent, sorting]]
 
